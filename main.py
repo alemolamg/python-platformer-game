@@ -17,12 +17,12 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 def flip(sprites):
-    return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
+    return [pygame.transform.flip(sprite, True, False) for sprite in sprites]  # Strites = imagen con los movimientos.
 
 
 def load_sprite_sheets(dir1, dir2, width, height, direction=False):
     path = join("assets", dir1, dir2)
-    images = [f for f in listdir(path) if isfile((join(path, f)))]
+    images = [f for f in listdir(path) if isfile((join(path, f)))]  # cargamosun único archivo
 
     all_sprites = {}
 
@@ -36,6 +36,13 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
             surface.blit(sprite_sheet, (0, 0), rect)
             sprites.append(pygame.transform.scale2x(surface))
 
+        if direction:
+            all_sprites[image.replace(".png", "") + "_right"] = sprites
+            all_sprites[image.replace(".png", "") + "_left"] = flip(sprites)
+        else:
+            all_sprites[image.replace(".png", "")] = sprites
+
+        return all_sprites
 
 class Player(pygame.sprite.Sprite):
     COLOR = (255, 0, 0)
@@ -67,7 +74,7 @@ class Player(pygame.sprite.Sprite):
             self.animation_count = 0
 
     def loop(self, fps):
-        self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
+        self.y_vel += min(0.5, (self.fall_count / fps) * self.GRAVITY)
         self.move(self.x_vel, self.y_vel)
 
         self.fall_count += 1
